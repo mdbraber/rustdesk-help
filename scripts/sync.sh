@@ -52,7 +52,9 @@ bash "$here/scripts/trim-workflow.sh" .
 sed "s/@VERSION@/$VERSION/g" "$here/scripts/custom-build.yml" > .github/workflows/custom-build.yml
 
 git init -q -b "$branch"
-git add -A
+# -f: RustDesk tracks files that its own .gitignore matches (app icons,
+# for example); the clone holds only tracked files, so add everything.
+git add -A -f
 git -c user.name="rustdesk-help" -c user.email="rustdesk-help@users.noreply.github.com" commit -q \
   -m "RustDesk $VERSION with the ID server rustdesk.nedworks.org" \
   -m "Official source: rustdesk/rustdesk $VERSION ($upstream), libs/hbb_common at rustdesk/hbb_common $hbb. Changes: patch/apply.py and scripts/trim-workflow.sh of rustdesk-help."
