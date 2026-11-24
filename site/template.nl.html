@@ -33,19 +33,34 @@
   summary { cursor:pointer; font-weight:600; }
   .links a { margin-right:14px; white-space:nowrap; }
   .lang { text-align:right; margin:0; font-size:.9rem; }
+  .dl { display:inline-flex; align-items:stretch; position:relative; margin:4px 0 8px; max-width:100%; }
+  .dl .btn, .dl summary { font-size:1rem; line-height:1.5; padding-top:10px; padding-bottom:10px; box-sizing:border-box; }
+  .dl .btn { margin:0; border-radius:8px 0 0 8px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0; }
+  .dl details { position:static; display:block; margin:0; }
+  .dl summary { list-style:none; display:block; padding-left:13px; padding-right:13px; background:var(--accent); color:var(--accent-fg); border-radius:0 8px 8px 0; border-left:1px solid rgba(255,255,255,.35); cursor:pointer; user-select:none; }
+  .dl summary::-webkit-details-marker { display:none; }
+  .dl summary:focus-visible, .dl .btn:focus-visible { outline:2px solid var(--fg); outline-offset:2px; }
+  .dl .menu { position:absolute; left:0; top:100%; margin-top:6px; min-width:100%; background:var(--card); border:1px solid var(--line); border-radius:10px; box-shadow:0 8px 24px rgba(0,0,0,.18); padding:6px 0; z-index:20; }
+  .dl .menu .grp { color:var(--muted); font-size:.78rem; text-transform:uppercase; letter-spacing:.04em; padding:8px 14px 2px; }
+  .dl .menu a { display:block; padding:6px 14px; color:var(--fg); text-decoration:none; white-space:nowrap; }
+  .dl .menu a:hover, .dl .menu a:focus { background:var(--bg); }
+  @media (max-width: 480px) {
+    section { padding:16px 14px; }
+    .dl .btn { padding-left:14px; padding-right:14px; }
+    .dl .pre { display:none; }
+  }
   footer { color:var(--muted); font-size:.85rem; text-align:center; margin-top:28px; }
 </style>
 </head>
 <body>
-<main data-t-win="Downloaden voor Windows" data-t-win-other="Windows op Intel/AMD" data-t-copy="Kopieer" data-t-copied="Gekopieerd">
+<main data-t-copy="Kopieer" data-t-copied="Gekopieerd">
   <p class="lang"><a href="en.html" hreflang="en" lang="en">English</a></p>
   <h1>Hulp op afstand</h1>
   <p class="lead">Download RustDesk, dan kan ik je op afstand helpen op je computer. Als het programma draait, geef je mij de <strong>ID</strong> en het <strong>eenmalige wachtwoord</strong> die het laat zien. Ik kan alleen meekijken zolang RustDesk openstaat en jij mij dat wachtwoord hebt gegeven.</p>
 
   <section id="windows" data-os="windows">
     <h2>Windows</h2>
-    <a class="btn" id="win-x64" href="files/{{WIN_X64}}" download="{{WIN_X64}}">Downloaden voor Windows</a>
-    <a class="btn secondary" id="win-arm" href="files/{{WIN_ARM}}" download="{{WIN_ARM}}">Windows op ARM</a>
+    <div class="dl" data-for="windows"></div>
     <ol>
       <li>Open het gedownloade bestand. Als Windows meldt "Windows heeft uw pc beschermd", klik dan op <em>Meer informatie</em> en daarna op <em>Toch uitvoeren</em>.</li>
       <li>RustDesk start meteen; installeren is niet nodig.</li>
@@ -56,9 +71,8 @@
 
   <section id="mac" data-os="mac">
     <h2>Mac</h2>
-    <a class="btn" href="{{MAC_ARM}}">Downloaden voor Mac met Apple-chip (M1 of nieuwer)</a>
-    <a class="btn secondary" href="{{MAC_X64}}">Mac met Intel-processor</a>
-    <p class="note">Weet je het niet zeker? Open het Apple-menu (linksboven) → Over deze Mac. Staat er "Chip: Apple M…", dan heb je een Apple-chip; staat er "Processor: Intel", dan een Intel-processor.</p>
+    <div class="dl" data-for="mac"></div>
+    <p class="note" id="mac-unsure">Weet je het niet zeker? Open het Apple-menu (linksboven) → Over deze Mac. Staat er "Chip: Apple M…", dan heb je een Apple-chip; staat er "Processor: Intel", dan een Intel-processor.</p>
     <ol>
       <li>Open het gedownloade bestand en sleep RustDesk naar de map Apps (Programma's). Open RustDesk daarna vanuit die map.</li>
 <!--if official-mac-->
@@ -72,16 +86,7 @@
 
   <section id="linux" data-os="linux">
     <h2>Linux</h2>
-    <p class="links">Intel/AMD (x86_64):
-      <a href="{{LINUX_X64_DEB}}">.deb (Ubuntu, Debian)</a>
-      <a href="{{LINUX_X64_RPM}}">.rpm (Fedora)</a>
-      <a href="{{LINUX_X64_APPIMAGE}}">AppImage</a>
-      <a href="{{LINUX_X64_FLATPAK}}">Flatpak</a></p>
-    <p class="links">ARM (aarch64):
-      <a href="{{LINUX_ARM_DEB}}">.deb</a>
-      <a href="{{LINUX_ARM_RPM}}">.rpm</a>
-      <a href="{{LINUX_ARM_APPIMAGE}}">AppImage</a>
-      <a href="{{LINUX_ARM_FLATPAK}}">Flatpak</a></p>
+    <div class="dl" data-for="linux"></div>
     <ol>
       <li>Installeer en open RustDesk en vul daarna de instellingen zelf in (zie hieronder).</li>
       <li>Op Wayland vraagt RustDesk elke keer als ik verbinding maak of je je scherm wilt delen. Kies je scherm en klik op <em>Delen</em>.</li>
@@ -90,7 +95,7 @@
 
   <section id="android" data-os="android">
     <h2>Android</h2>
-    <a class="btn" href="{{ANDROID}}">Downloaden voor Android</a>
+    <div class="dl" data-for="android"></div>
     <ol>
 <!--if custom-android-->
       <li>Staat de RustDesk-app van de Play Store of F-Droid al op je telefoon? Verwijder die dan eerst; deze versie kan er niet overheen worden geïnstalleerd.</li>
@@ -126,6 +131,8 @@
 
   <footer>{{FOOTER}}</footer>
 </main>
+<script type="application/json" id="downloads">{{DOWNLOADS_JSON}}</script>
+<noscript><section>{{NOSCRIPT}}</section></noscript>
 <script>
 (async function () {
   var ua = navigator.userAgent, os = null;
@@ -148,18 +155,90 @@
     e.target.style.display = 'none';
   });
 
-  // Windows on ARM: Chromium-based browsers can tell; make that the main button.
-  if (os === 'windows' && navigator.userAgentData && navigator.userAgentData.getHighEntropyValues) {
+  // Download buttons: one split button per section, the detected version
+  // as the main button and every other version in the menu beside it.
+  var lang = document.documentElement.lang === 'en' ? 'en' : 'nl';
+  var DL = JSON.parse(document.getElementById('downloads').textContent);
+  function link(d, cls, text) {
+    var a = document.createElement('a');
+    a.href = d.url; a.textContent = text;
+    if (cls) a.className = cls;
+    if (d.local) a.setAttribute('download', '');
+    return a;
+  }
+  function render(box, mainId) {
+    var main = DL.find(function (d) { return d.id === mainId; }) || DL.find(function (d) { return d.os === box.dataset.for; });
+    box.textContent = '';
+    var btn = link(main, 'btn', main[lang].main), pre = document.createElement('span');
+    pre.className = 'pre'; pre.textContent = lang === 'en' ? 'Download for ' : 'Downloaden voor ';
+    btn.insertBefore(pre, btn.firstChild);
+    box.appendChild(btn);
+    var det = document.createElement('details'), sum = document.createElement('summary'), menu = document.createElement('div');
+    sum.textContent = '▾'; sum.setAttribute('aria-label', lang === 'en' ? 'Other versions' : 'Andere versies');
+    menu.className = 'menu';
+    var group = null;
+    DL.forEach(function (d) {
+      if (d.id === main.id) return;
+      if (d[lang].group !== group) {
+        group = d[lang].group;
+        var g = document.createElement('div'); g.className = 'grp'; g.textContent = group; menu.appendChild(g);
+      }
+      menu.appendChild(link(d, '', d[lang].name));
+    });
+    det.appendChild(sum); det.appendChild(menu); box.appendChild(det);
+  }
+  document.addEventListener('click', function (e) {
+    document.querySelectorAll('.dl details[open]').forEach(function (d) { if (!d.contains(e.target)) d.open = false; });
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') document.querySelectorAll('.dl details[open]').forEach(function (d) { d.open = false; });
+  });
+
+  // Processor type. Chrome and Edge say it outright (client hints); for a
+  // Mac in Safari or Firefox the graphics chip tells: an Apple chip reports
+  // an Apple GPU and supports ASTC textures, an Intel Mac reports an Intel,
+  // AMD or NVIDIA GPU and doesn't.
+  async function arch() {
     try {
-      var v = await navigator.userAgentData.getHighEntropyValues(['architecture', 'bitness']);
-      if (v.architecture === 'arm') {
-        var x64 = document.getElementById('win-x64'), arm = document.getElementById('win-arm');
-        arm.className = 'btn'; arm.textContent = document.querySelector('main').dataset.tWin;
-        x64.className = 'btn secondary'; x64.textContent = document.querySelector('main').dataset.tWinOther;
-        arm.parentNode.insertBefore(arm, x64);
+      if (navigator.userAgentData && navigator.userAgentData.getHighEntropyValues) {
+        var v = await navigator.userAgentData.getHighEntropyValues(['architecture']);
+        if (v.architecture === 'arm') return { arm: true, sure: true };
+        if (v.architecture === 'x86') return { arm: false, sure: true };
       }
     } catch (e) {}
+    if (os === 'mac') {
+      try {
+        var gl = document.createElement('canvas').getContext('webgl');
+        if (gl) {
+          var info = gl.getExtension('WEBGL_debug_renderer_info');
+          var r = info ? String(gl.getParameter(info.UNMASKED_RENDERER_WEBGL)) : '';
+          if (/Intel|AMD|Radeon|NVIDIA|GeForce/i.test(r)) return { arm: false, sure: true };
+          if (/Apple M\d/i.test(r)) return { arm: true, sure: true };
+          if (gl.getExtension('WEBGL_compressed_texture_astc')) return { arm: true, sure: true };
+          if (r) return { arm: false, sure: false };
+        }
+      } catch (e) {}
+      return { arm: true, sure: false };
+    }
+    var p = (navigator.platform || '') + ' ' + ua;
+    if (/aarch64|arm64|armv8/i.test(p)) return { arm: true, sure: true };
+    return { arm: false, sure: false };
   }
+  var a = await arch();
+  var choice = {
+    windows: a.arm ? 'win-arm' : 'win-x64',
+    mac: a.arm ? 'mac-arm' : 'mac-x64',
+    linux: a.arm ? 'linux-arm-deb' : 'linux-x64-deb',
+    android: 'android'
+  };
+  var fallback = { windows: 'win-x64', mac: 'mac-arm', linux: 'linux-x64-deb', android: 'android' };
+  document.querySelectorAll('.dl[data-for]').forEach(function (box) {
+    // Only the visitor's own system uses the detected processor type.
+    var f = box.dataset.for;
+    render(box, f === os ? choice[f] : fallback[f]);
+  });
+  var unsure = document.getElementById('mac-unsure');
+  if (unsure && os === 'mac' && a.sure) unsure.hidden = true;
 
   document.querySelectorAll('button.copy').forEach(function (b) {
     b.addEventListener('click', function () {

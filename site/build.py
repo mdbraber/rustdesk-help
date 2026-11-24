@@ -118,6 +118,60 @@ def main():
         "LINUX_ARM_DEB": url("rustdesk-{v}-aarch64.deb"), "LINUX_ARM_RPM": url("rustdesk-{v}-0.aarch64.rpm"),
         "LINUX_ARM_APPIMAGE": url("rustdesk-{v}-aarch64.AppImage"), "LINUX_ARM_FLATPAK": url("rustdesk-{v}-aarch64.flatpak"),
     }
+    # Every download, for the split buttons: the page shows the detected
+    # version as the main button and the others in the menu beside it.
+    def item(id_, os_, url_, nl, en, local=False):
+        return {"id": id_, "os": os_, "url": url_, "local": local, "nl": nl, "en": en}
+    def names(group_nl, group_en, name_nl, name_en, main_nl, main_en):
+        # "main" without the "Download for" prefix: the page adds it, and
+        # leaves it out on narrow screens so the button fits on one line.
+        return ({"group": group_nl, "name": name_nl, "main": main_nl.removeprefix("Downloaden voor ")},
+                {"group": group_en, "name": name_en, "main": main_en.removeprefix("Download for ")})
+    lx = lambda arch_nl, arch_en, kind, kind_long, key: item(
+        f"linux-{'arm' if arch_en == 'ARM' else 'x64'}-{kind}", "linux", values[key],
+        *names(f"Linux ({arch_nl})", f"Linux ({arch_en})", kind_long, kind_long,
+               f"Downloaden voor Linux ({kind_long.split()[0]}, {arch_nl})",
+               f"Download for Linux ({kind_long.split()[0]}, {arch_en})"))
+    downloads = [
+        item("win-x64", "windows", "files/" + values["WIN_X64"],
+             *names("Windows", "Windows", "Windows (Intel/AMD)", "Windows (Intel/AMD)",
+                    "Downloaden voor Windows", "Download for Windows"), local=True),
+        item("win-arm", "windows", "files/" + values["WIN_ARM"],
+             *names("Windows", "Windows", "Windows op ARM", "Windows on ARM",
+                    "Downloaden voor Windows op ARM", "Download for Windows on ARM"), local=True),
+        item("mac-arm", "mac", values["MAC_ARM"],
+             *names("Mac", "Mac", "Mac met Apple-chip (M1 of nieuwer)", "Mac with Apple chip (M1 or newer)",
+                    "Downloaden voor Mac met Apple-chip", "Download for Mac with Apple chip")),
+        item("mac-x64", "mac", values["MAC_X64"],
+             *names("Mac", "Mac", "Mac met Intel-processor", "Mac with Intel processor",
+                    "Downloaden voor Mac met Intel", "Download for Mac with Intel")),
+        lx("Intel/AMD", "Intel/AMD", "deb", ".deb (Ubuntu, Debian)", "LINUX_X64_DEB"),
+        lx("Intel/AMD", "Intel/AMD", "rpm", ".rpm (Fedora)", "LINUX_X64_RPM"),
+        lx("Intel/AMD", "Intel/AMD", "appimage", "AppImage", "LINUX_X64_APPIMAGE"),
+        lx("Intel/AMD", "Intel/AMD", "flatpak", "Flatpak", "LINUX_X64_FLATPAK"),
+        lx("ARM", "ARM", "deb", ".deb (Ubuntu, Debian)", "LINUX_ARM_DEB"),
+        lx("ARM", "ARM", "rpm", ".rpm (Fedora)", "LINUX_ARM_RPM"),
+        lx("ARM", "ARM", "appimage", "AppImage", "LINUX_ARM_APPIMAGE"),
+        lx("ARM", "ARM", "flatpak", "Flatpak", "LINUX_ARM_FLATPAK"),
+        item("android", "android", values["ANDROID"],
+             *names("Android", "Android", "Android", "Android",
+                    "Downloaden voor Android", "Download for Android")),
+    ]
+    # Safe inside <script>: no "</" can end the element early.
+    downloads_json = json.dumps(downloads, ensure_ascii=False).replace("</", "<\\/")
+    def noscript(lang):
+        out, group = [], None
+        for d in downloads:
+            if d[lang]["group"] != group:
+                if group is not None:
+                    out.append("</p>")
+                group = d[lang]["group"]
+                out.append(f"<p><strong>{html.escape(group)}</strong>: ")
+            dl = " download" if d["local"] else ""
+            out.append(f'<a href="{html.escape(d["url"])}"{dl}>{html.escape(d[lang]["name"])}</a> ')
+        out.append("</p>")
+        return "".join(out)
+
     flags = {"custom-mac": custom_mac, "official-mac": not custom_mac,
              "custom-android": custom_android, "official-android": not custom_android}
     src = f"https://github.com/{REPO}" if rel else "https://github.com/rustdesk/rustdesk"
@@ -139,7 +193,7 @@ def main():
         page = re.sub(r"<!--if ([a-z-]+)-->\n(.*?)<!--end-->\n", block, page, flags=re.S)
         if "<!--if" in page or "<!--end" in page:
             sys.exit(f"unbalanced <!--if--> blocks in template.{lang}.html")
-        for k, v in {**values, "FOOTER": footers[lang]}.items():
+        for k, v in {**values, "FOOTER": footers[lang], "DOWNLOADS_JSON": downloads_json, "NOSCRIPT": noscript(lang)}.items():
             page = page.replace("{{" + k + "}}", v)
         if "{{" in page:
             sys.exit(f"unfilled placeholder left in template.{lang}.html")
