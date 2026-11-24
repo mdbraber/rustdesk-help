@@ -88,7 +88,11 @@ def main():
         return oa[name]
 
     rel = ours()
-    mine = {a["name"]: a["browser_download_url"] for a in (rel["assets"] if rel else [])}
+    # GitHub's "latest release" links always lead to the newest file under
+    # the same name, so a copy of this page hosted elsewhere stays current
+    # for Mac and Android without being rebuilt.
+    latest = f"https://github.com/{REPO}/releases/latest/download/"
+    mine = {a["name"]: latest + a["name"] for a in (rel["assets"] if rel else [])}
     custom_mac = "RustDesk-Mac-Apple-chip.dmg" in mine and "RustDesk-Mac-Intel.dmg" in mine
     custom_android = "RustDesk-Android.apk" in mine
 
@@ -142,8 +146,6 @@ def main():
         with open(os.path.join(OUT, out), "w", encoding="utf-8") as f:
             f.write(page)
     shutil.copy(os.path.join(HERE, "qr-config.svg"), OUT)
-    with open(os.path.join(OUT, "CNAME"), "w") as f:
-        f.write("help.mdbraber.com\n")
     print(f"built {OUT}: Windows/Linux official {ov}; Mac {'ours' if custom_mac else 'official'}; "
           f"Android {'ours' if custom_android else 'official'}"
           + (f" (release {rel['tag_name']})" if rel else ""))

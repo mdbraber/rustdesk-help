@@ -22,7 +22,12 @@ built from.
     with `RustDesk-Android.apk`, `RustDesk-Mac-Apple-chip.dmg` and
     `RustDesk-Mac-Intel.dmg`, and refreshes the page.
   A failure of the daily check opens an issue.
-- **Download page** (`.github/workflows/pages.yml`, `site/`): Dutch
+- **Download page** (`site/`): served at help.mdbraber.com from spiff
+  (`/var/www/help/static`, built with `python3 -I site/build.py`); a copy is
+  published by `.github/workflows/pages.yml` at
+  <https://mdbraber.github.io/rustdesk-help/>. Mac and Android buttons use
+  GitHub's `releases/latest/download/` links, so the page on spiff stays
+  current for them without being rebuilt. Dutch
   (`index.html`) and English (`en.html`). Mac and Android come from this
   repository's latest release when it has them, otherwise from the official
   release with a setup step. Windows is the official installer saved under a
