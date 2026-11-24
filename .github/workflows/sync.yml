@@ -1,0 +1,67 @@
+# Daily: when RustDesk has published a new release (at least 7 days ago),
+# prepare its build branch, which starts the build. Opens an issue when this
+# fails, for example when patch/apply.py no longer matches the new source.
+name: Check for a new RustDesk release
+
+on:
+  schedule:
+    - cron: "17 5 * * *"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "RustDesk version to build (empty: the latest release)"
+        required: false
+      force:
+        description: "Build even if the release is newer than 7 days or was built already"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          # A build branch contains workflow files, which GITHUB_TOKEN may not
+          # push: SYNC_TOKEN is a fine-grained token for this repository only
+          # (Contents and Workflows: read and write).
+          token: ${{ secrets.SYNC_TOKEN }}
+          fetch-depth: 0
+
+      - name: Prepare and push the build branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ inputs.version }}
+          FORCE: ${{ inputs.force }}
+        run: bash scripts/sync.sh
+
+      - name: Keep the schedule alive
+        # GitHub pauses scheduled workflows of a public repository after 60
+        # days without activity; an empty commit every 45 days prevents that.
+        run: |
+          last=$(git log -1 --format=%ct origin/main)
+          if [ $(( ($(date +%s) - last) / 86400 )) -ge 45 ]; then
+            git -c user.name="rustdesk-help" -c user.email="rustdesk-help@users.noreply.github.com" \
+              commit --allow-empty -q -m "Keep the daily check active"
+            git push -q origin HEAD:main
+          fi
+
+      - name: Report a failure
+        if: failure() && github.event_name == 'schedule'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          title="The daily RustDesk check failed"
+          if [ -z "$(gh issue list -R "$GITHUB_REPOSITORY" --state open --search "in:title \"$title\"" --json number --jq '.[].number')" ]; then
+            gh issue create -R "$GITHUB_REPOSITORY" --title "$title" \
+              --body "See $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID. Often a new RustDesk release changed the code that patch/apply.py edits."
+          fi

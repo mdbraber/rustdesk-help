@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Hulp op afstand – RustDesk downloaden</title>
+<style>
+  :root { --fg:#1d232b; --muted:#5b6672; --bg:#f6f7f9; --card:#fff; --line:#e1e5ea; --accent:#0a66c2; --accent-fg:#fff; }
+  @media (prefers-color-scheme: dark) {
+    :root { --fg:#e8ebef; --muted:#9aa5b1; --bg:#14181d; --card:#1c2128; --line:#2d343d; --accent:#4c9be8; --accent-fg:#0b1016; }
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; color:var(--fg); background:var(--bg); }
+  main { max-width:760px; margin:0 auto; padding:32px 20px 64px; }
+  h1 { font-size:1.7rem; margin:0 0 4px; }
+  h2 { font-size:1.15rem; margin:0 0 12px; }
+  p.lead { color:var(--muted); margin:0 0 28px; }
+  section { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:20px 22px; margin:0 0 18px; }
+  section.hidden { display:none; }
+  .btn { display:inline-block; padding:10px 16px; border-radius:8px; background:var(--accent); color:var(--accent-fg); text-decoration:none; font-weight:600; margin:4px 8px 4px 0; border:0; font-size:1rem; cursor:pointer; }
+  .btn.secondary { background:transparent; color:var(--accent); border:1px solid var(--accent); }
+  ol { padding-left:22px; margin:12px 0 0; }
+  li { margin:6px 0; }
+  code, .mono { font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:.9em; }
+  .field { display:flex; gap:8px; align-items:center; margin:6px 0; flex-wrap:wrap; }
+  .field label { min-width:90px; color:var(--muted); }
+  .field input { flex:1; min-width:220px; padding:7px 9px; border:1px solid var(--line); border-radius:6px; background:var(--bg); color:var(--fg); font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.85rem; }
+  .copy { padding:7px 12px; border-radius:6px; border:1px solid var(--line); background:var(--bg); color:var(--fg); cursor:pointer; }
+  .note { color:var(--muted); font-size:.92rem; }
+  .qr { background:#fff; padding:8px; border-radius:8px; width:200px; height:200px; display:block; margin:10px 0; }
+  details { margin-top:8px; }
+  summary { cursor:pointer; font-weight:600; }
+  .links a { margin-right:14px; white-space:nowrap; }
+  .lang { text-align:right; margin:0; font-size:.9rem; }
+  footer { color:var(--muted); font-size:.85rem; text-align:center; margin-top:28px; }
+</style>
+</head>
+<body>
+<main data-t-win="Downloaden voor Windows" data-t-win-other="Windows op Intel/AMD" data-t-copy="Kopieer" data-t-copied="Gekopieerd">
+  <p class="lang"><a href="en.html" hreflang="en" lang="en">English</a></p>
+  <h1>Hulp op afstand</h1>
+  <p class="lead">Download RustDesk, dan kan ik je op afstand helpen op je computer. Als het programma draait, geef je mij de <strong>ID</strong> en het <strong>eenmalige wachtwoord</strong> die het laat zien. Ik kan alleen meekijken zolang RustDesk openstaat en jij mij dat wachtwoord hebt gegeven.</p>
+
+  <section id="windows" data-os="windows">
+    <h2>Windows</h2>
+    <a class="btn" id="win-x64" href="files/{{WIN_X64}}" download="{{WIN_X64}}">Downloaden voor Windows</a>
+    <a class="btn secondary" id="win-arm" href="files/{{WIN_ARM}}" download="{{WIN_ARM}}">Windows op ARM</a>
+    <ol>
+      <li>Open het gedownloade bestand. Als Windows meldt "Windows heeft uw pc beschermd", klik dan op <em>Meer informatie</em> en daarna op <em>Toch uitvoeren</em>.</li>
+      <li>RustDesk start meteen; installeren is niet nodig.</li>
+      <li>Geef mij de ID en het eenmalige wachtwoord.</li>
+    </ol>
+    <p class="note">Deze download is al ingesteld voor mijn server: RustDesk haalt de instellingen uit de bestandsnaam. Wijzig de naam van het bestand dus niet.</p>
+  </section>
+
+  <section id="mac" data-os="mac">
+    <h2>Mac</h2>
+    <a class="btn" href="{{MAC_ARM}}">Downloaden voor Mac met Apple-chip (M1 of nieuwer)</a>
+    <a class="btn secondary" href="{{MAC_X64}}">Mac met Intel-processor</a>
+    <p class="note">Weet je het niet zeker? Open het Apple-menu (linksboven) → Over deze Mac. Staat er "Chip: Apple M…", dan heb je een Apple-chip; staat er "Processor: Intel", dan een Intel-processor.</p>
+    <ol>
+      <li>Open het gedownloade bestand en sleep RustDesk naar de map Apps (Programma's). Open RustDesk daarna vanuit die map.</li>
+<!--if official-mac-->
+      <li>Klik op deze knop om mijn serverinstellingen te laden: <a class="btn secondary" href="rustdesk://config/{{CONFIG}}">RustDesk instellen</a><br>
+          <span class="note">Gebeurt er niets? Vul de instellingen dan zelf in (zie "Instellingen zelf invullen" hieronder).</span></li>
+<!--end-->
+      <li>macOS vraagt om toestemming. Open Systeeminstellingen → Privacy en beveiliging en zet RustDesk aan bij <em>Scherm- en systeemaudio-opname</em> en bij <em>Toegankelijkheid</em>. Stop RustDesk daarna en open het opnieuw.</li>
+      <li>Geef mij de ID en het eenmalige wachtwoord.</li>
+    </ol>
+  </section>
+
+  <section id="linux" data-os="linux">
+    <h2>Linux</h2>
+    <p class="links">Intel/AMD (x86_64):
+      <a href="{{LINUX_X64_DEB}}">.deb (Ubuntu, Debian)</a>
+      <a href="{{LINUX_X64_RPM}}">.rpm (Fedora)</a>
+      <a href="{{LINUX_X64_APPIMAGE}}">AppImage</a>
+      <a href="{{LINUX_X64_FLATPAK}}">Flatpak</a></p>
+    <p class="links">ARM (aarch64):
+      <a href="{{LINUX_ARM_DEB}}">.deb</a>
+      <a href="{{LINUX_ARM_RPM}}">.rpm</a>
+      <a href="{{LINUX_ARM_APPIMAGE}}">AppImage</a>
+      <a href="{{LINUX_ARM_FLATPAK}}">Flatpak</a></p>
+    <ol>
+      <li>Installeer en open RustDesk en vul daarna de instellingen zelf in (zie hieronder).</li>
+      <li>Op Wayland vraagt RustDesk elke keer als ik verbinding maak of je je scherm wilt delen. Kies je scherm en klik op <em>Delen</em>.</li>
+    </ol>
+  </section>
+
+  <section id="android" data-os="android">
+    <h2>Android</h2>
+    <a class="btn" href="{{ANDROID}}">Downloaden voor Android</a>
+    <ol>
+<!--if custom-android-->
+      <li>Staat de RustDesk-app van de Play Store of F-Droid al op je telefoon? Verwijder die dan eerst; deze versie kan er niet overheen worden geïnstalleerd.</li>
+<!--end-->
+      <li>Open het gedownloade bestand. Als Android erom vraagt, sta dan toe dat je browser apps installeert.</li>
+<!--if official-android-->
+      <li>Ga in RustDesk naar Instellingen → ID/Relay server, tik op het scan-pictogram en scan deze code vanaf een ander scherm. Of vul de instellingen zelf in.
+        <img class="qr" src="qr-config.svg" alt="QR-code met de serverinstellingen"></li>
+<!--end-->
+      <li>Tik op het tabblad voor scherm delen op de knop om de service te starten, en geef de toestemmingen die Android vraagt.</li>
+      <li>Geef mij de ID en het eenmalige wachtwoord.</li>
+    </ol>
+  </section>
+
+  <section id="ios" data-os="ios">
+    <h2>iPhone en iPad</h2>
+    <p>Apple staat niet toe dat iemand anders via RustDesk meekijkt op een iPhone of iPad, dus daarmee kan ik je op deze manier niet helpen. Heb je hulp nodig op een computer? Open deze pagina dan op die computer.</p>
+  </section>
+
+  <section id="manual">
+    <h2>Instellingen zelf invullen</h2>
+    <p>Open in RustDesk Instellingen → Netwerk (op Windows en Mac moet je de netwerkinstellingen misschien eerst ontgrendelen) en daarna ID/Relay server. Vul deze twee velden in en laat de rest leeg:</p>
+    <div class="field"><label>ID-server</label><input readonly value="{{HOST}}"><button class="copy" data-copy="{{HOST}}">Kopieer</button></div>
+    <div class="field"><label>Sleutel</label><input readonly value="{{KEY}}"><button class="copy" data-copy="{{KEY}}">Kopieer</button></div>
+    <details>
+      <summary>Of importeer alles in één regel</summary>
+      <p class="note">Kopieer deze regel en gebruik op het scherm ID/Relay server de knop om te plakken/importeren.</p>
+      <div class="field"><input readonly value="{{CONFIG}}"><button class="copy" data-copy="{{CONFIG}}">Kopieer</button></div>
+    </details>
+  </section>
+
+  <p style="text-align:center"><button class="btn secondary" id="show-all" type="button">Downloads voor alle apparaten tonen</button></p>
+
+  <footer>{{FOOTER}}</footer>
+</main>
+<script>
+(async function () {
+  var ua = navigator.userAgent, os = null;
+  if (/iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1)) os = 'ios';
+  else if (/Android/.test(ua)) os = 'android';
+  else if (/Windows/.test(ua)) os = 'windows';
+  else if (/Macintosh|Mac OS X/.test(ua)) os = 'mac';
+  else if (/Linux|X11|CrOS/.test(ua)) os = 'linux';
+
+  var sections = document.querySelectorAll('section[data-os]');
+  if (os) {
+    sections.forEach(function (s) { if (s.dataset.os !== os) s.classList.add('hidden'); });
+    if (os === 'ios') document.getElementById('manual').classList.add('hidden');
+  } else {
+    document.getElementById('show-all').style.display = 'none';
+  }
+  document.getElementById('show-all').addEventListener('click', function (e) {
+    sections.forEach(function (s) { s.classList.remove('hidden'); });
+    document.getElementById('manual').classList.remove('hidden');
+    e.target.style.display = 'none';
+  });
+
+  // Windows on ARM: Chromium-based browsers can tell; make that the main button.
+  if (os === 'windows' && navigator.userAgentData && navigator.userAgentData.getHighEntropyValues) {
+    try {
+      var v = await navigator.userAgentData.getHighEntropyValues(['architecture', 'bitness']);
+      if (v.architecture === 'arm') {
+        var x64 = document.getElementById('win-x64'), arm = document.getElementById('win-arm');
+        arm.className = 'btn'; arm.textContent = document.querySelector('main').dataset.tWin;
+        x64.className = 'btn secondary'; x64.textContent = document.querySelector('main').dataset.tWinOther;
+        arm.parentNode.insertBefore(arm, x64);
+      }
+    } catch (e) {}
+  }
+
+  document.querySelectorAll('button.copy').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var m = document.querySelector('main').dataset;
+      function done() { b.textContent = m.tCopied; setTimeout(function () { b.textContent = m.tCopy; }, 1500); }
+      // The site's Permissions-Policy may block the Clipboard API; then
+      // select the field and fall back to execCommand (or leave it
+      // selected for Ctrl+C / Cmd+C).
+      function fallback() {
+        var input = b.parentNode.querySelector('input');
+        input.focus(); input.select();
+        try { if (document.execCommand('copy')) done(); } catch (e) {}
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(b.dataset.copy).then(done, fallback);
+      } else { fallback(); }
+    });
+  });
+})();
+</script>
+</body>
+</html>

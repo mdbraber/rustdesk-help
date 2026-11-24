@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Remote support – download RustDesk</title>
+<style>
+  :root { --fg:#1d232b; --muted:#5b6672; --bg:#f6f7f9; --card:#fff; --line:#e1e5ea; --accent:#0a66c2; --accent-fg:#fff; }
+  @media (prefers-color-scheme: dark) {
+    :root { --fg:#e8ebef; --muted:#9aa5b1; --bg:#14181d; --card:#1c2128; --line:#2d343d; --accent:#4c9be8; --accent-fg:#0b1016; }
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; color:var(--fg); background:var(--bg); }
+  main { max-width:760px; margin:0 auto; padding:32px 20px 64px; }
+  h1 { font-size:1.7rem; margin:0 0 4px; }
+  h2 { font-size:1.15rem; margin:0 0 12px; }
+  p.lead { color:var(--muted); margin:0 0 28px; }
+  section { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:20px 22px; margin:0 0 18px; }
+  section.hidden { display:none; }
+  .btn { display:inline-block; padding:10px 16px; border-radius:8px; background:var(--accent); color:var(--accent-fg); text-decoration:none; font-weight:600; margin:4px 8px 4px 0; border:0; font-size:1rem; cursor:pointer; }
+  .btn.secondary { background:transparent; color:var(--accent); border:1px solid var(--accent); }
+  ol { padding-left:22px; margin:12px 0 0; }
+  li { margin:6px 0; }
+  code, .mono { font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:.9em; }
+  .field { display:flex; gap:8px; align-items:center; margin:6px 0; flex-wrap:wrap; }
+  .field label { min-width:90px; color:var(--muted); }
+  .field input { flex:1; min-width:220px; padding:7px 9px; border:1px solid var(--line); border-radius:6px; background:var(--bg); color:var(--fg); font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.85rem; }
+  .copy { padding:7px 12px; border-radius:6px; border:1px solid var(--line); background:var(--bg); color:var(--fg); cursor:pointer; }
+  .note { color:var(--muted); font-size:.92rem; }
+  .qr { background:#fff; padding:8px; border-radius:8px; width:200px; height:200px; display:block; margin:10px 0; }
+  details { margin-top:8px; }
+  summary { cursor:pointer; font-weight:600; }
+  .links a { margin-right:14px; white-space:nowrap; }
+  .lang { text-align:right; margin:0; font-size:.9rem; }
+  footer { color:var(--muted); font-size:.85rem; text-align:center; margin-top:28px; }
+</style>
+</head>
+<body>
+<main data-t-win="Download for Windows" data-t-win-other="Windows on Intel/AMD" data-t-copy="Copy" data-t-copied="Copied">
+  <p class="lang"><a href="./" hreflang="nl" lang="nl">Nederlands</a></p>
+  <h1>Remote support</h1>
+  <p class="lead">Download RustDesk so I can help you on your computer. When it is running, read me the <strong>ID</strong> and <strong>one-time password</strong> it shows. I can only see your screen while you keep RustDesk open and have given me that password.</p>
+
+  <section id="windows" data-os="windows">
+    <h2>Windows</h2>
+    <a class="btn" id="win-x64" href="files/{{WIN_X64}}" download="{{WIN_X64}}">Download for Windows</a>
+    <a class="btn secondary" id="win-arm" href="files/{{WIN_ARM}}" download="{{WIN_ARM}}">Windows on ARM</a>
+    <ol>
+      <li>Open the downloaded file. If Windows shows "Windows protected your PC", click <em>More info</em> and then <em>Run anyway</em>.</li>
+      <li>RustDesk starts straight away; you don't have to install it.</li>
+      <li>Read me the ID and one-time password.</li>
+    </ol>
+    <p class="note">This download is already set up for my server: RustDesk reads its settings from the file name, so please don't rename it.</p>
+  </section>
+
+  <section id="mac" data-os="mac">
+    <h2>Mac</h2>
+    <a class="btn" href="{{MAC_ARM}}">Download for Mac with Apple chip (M1 or newer)</a>
+    <a class="btn secondary" href="{{MAC_X64}}">Mac with Intel processor</a>
+    <p class="note">Not sure? Open the Apple menu (top left) → About This Mac. "Chip: Apple M…" means Apple chip; "Processor: Intel" means Intel.</p>
+    <ol>
+      <li>Open the downloaded file and drag RustDesk into the Applications folder. Then open RustDesk from Applications.</li>
+<!--if official-mac-->
+      <li>Click this button to load my server settings: <a class="btn secondary" href="rustdesk://config/{{CONFIG}}">Set up RustDesk</a><br>
+          <span class="note">If nothing happens, enter the settings by hand (see "Enter the settings by hand" below).</span></li>
+<!--end-->
+      <li>macOS asks for permission. Open System Settings → Privacy &amp; Security and switch RustDesk on under <em>Screen &amp; System Audio Recording</em> and <em>Accessibility</em>. Then quit and reopen RustDesk.</li>
+      <li>Read me the ID and one-time password.</li>
+    </ol>
+  </section>
+
+  <section id="linux" data-os="linux">
+    <h2>Linux</h2>
+    <p class="links">Intel/AMD (x86_64):
+      <a href="{{LINUX_X64_DEB}}">.deb (Ubuntu, Debian)</a>
+      <a href="{{LINUX_X64_RPM}}">.rpm (Fedora)</a>
+      <a href="{{LINUX_X64_APPIMAGE}}">AppImage</a>
+      <a href="{{LINUX_X64_FLATPAK}}">Flatpak</a></p>
+    <p class="links">ARM (aarch64):
+      <a href="{{LINUX_ARM_DEB}}">.deb</a>
+      <a href="{{LINUX_ARM_RPM}}">.rpm</a>
+      <a href="{{LINUX_ARM_APPIMAGE}}">AppImage</a>
+      <a href="{{LINUX_ARM_FLATPAK}}">Flatpak</a></p>
+    <ol>
+      <li>Install and open RustDesk, then enter the settings by hand (see below).</li>
+      <li>On Wayland, RustDesk asks you to allow screen sharing each time I connect. Choose your screen and click <em>Share</em>.</li>
+    </ol>
+  </section>
+
+  <section id="android" data-os="android">
+    <h2>Android</h2>
+    <a class="btn" href="{{ANDROID}}">Download for Android</a>
+    <ol>
+<!--if custom-android-->
+      <li>If the RustDesk app from the Play Store or F-Droid is already on your phone, remove it first: this version can't be installed over it.</li>
+<!--end-->
+      <li>Open the downloaded file and allow installing apps from your browser if Android asks.</li>
+<!--if official-android-->
+      <li>In RustDesk, go to Settings → ID/Relay server and tap the scan icon, then scan this code from another screen. Or enter the settings by hand.
+        <img class="qr" src="qr-config.svg" alt="QR code with the server settings"></li>
+<!--end-->
+      <li>On the Share screen tab, tap <em>Start service</em> and allow the permissions Android asks for.</li>
+      <li>Read me the ID and one-time password.</li>
+    </ol>
+  </section>
+
+  <section id="ios" data-os="ios">
+    <h2>iPhone and iPad</h2>
+    <p>Apple doesn't allow other people to see or control an iPhone or iPad through RustDesk, so I can't help you on it this way. If you need help on a computer, open this page on that computer.</p>
+  </section>
+
+  <section id="manual">
+    <h2>Enter the settings by hand</h2>
+    <p>In RustDesk, open Settings → Network (on Windows and Mac you may first need to click <em>Unlock network settings</em>), then ID/Relay server. Fill in these two fields and leave the others empty:</p>
+    <div class="field"><label>ID server</label><input readonly value="{{HOST}}"><button class="copy" data-copy="{{HOST}}">Copy</button></div>
+    <div class="field"><label>Key</label><input readonly value="{{KEY}}"><button class="copy" data-copy="{{KEY}}">Copy</button></div>
+    <details>
+      <summary>Import as one line instead</summary>
+      <p class="note">On the ID/Relay server screen, copy this line and use the paste/import button.</p>
+      <div class="field"><input readonly value="{{CONFIG}}"><button class="copy" data-copy="{{CONFIG}}">Copy</button></div>
+    </details>
+  </section>
+
+  <p style="text-align:center"><button class="btn secondary" id="show-all" type="button">Show downloads for all devices</button></p>
+
+  <footer>{{FOOTER}}</footer>
+</main>
+<script>
+(async function () {
+  var ua = navigator.userAgent, os = null;
+  if (/iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1)) os = 'ios';
+  else if (/Android/.test(ua)) os = 'android';
+  else if (/Windows/.test(ua)) os = 'windows';
+  else if (/Macintosh|Mac OS X/.test(ua)) os = 'mac';
+  else if (/Linux|X11|CrOS/.test(ua)) os = 'linux';
+
+  var sections = document.querySelectorAll('section[data-os]');
+  if (os) {
+    sections.forEach(function (s) { if (s.dataset.os !== os) s.classList.add('hidden'); });
+    if (os === 'ios') document.getElementById('manual').classList.add('hidden');
+  } else {
+    document.getElementById('show-all').style.display = 'none';
+  }
+  document.getElementById('show-all').addEventListener('click', function (e) {
+    sections.forEach(function (s) { s.classList.remove('hidden'); });
+    document.getElementById('manual').classList.remove('hidden');
+    e.target.style.display = 'none';
+  });
+
+  // Windows on ARM: Chromium-based browsers can tell; make that the main button.
+  if (os === 'windows' && navigator.userAgentData && navigator.userAgentData.getHighEntropyValues) {
+    try {
+      var v = await navigator.userAgentData.getHighEntropyValues(['architecture', 'bitness']);
+      if (v.architecture === 'arm') {
+        var x64 = document.getElementById('win-x64'), arm = document.getElementById('win-arm');
+        arm.className = 'btn'; arm.textContent = document.querySelector('main').dataset.tWin;
+        x64.className = 'btn secondary'; x64.textContent = document.querySelector('main').dataset.tWinOther;
+        arm.parentNode.insertBefore(arm, x64);
+      }
+    } catch (e) {}
+  }
+
+  document.querySelectorAll('button.copy').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var m = document.querySelector('main').dataset;
+      function done() { b.textContent = m.tCopied; setTimeout(function () { b.textContent = m.tCopy; }, 1500); }
+      // The site's Permissions-Policy may block the Clipboard API; then
+      // select the field and fall back to execCommand (or leave it
+      // selected for Ctrl+C / Cmd+C).
+      function fallback() {
+        var input = b.parentNode.querySelector('input');
+        input.focus(); input.select();
+        try { if (document.execCommand('copy')) done(); } catch (e) {}
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(b.dataset.copy).then(done, fallback);
+      } else { fallback(); }
+    });
+  });
+})();
+</script>
+</body>
+</html>
