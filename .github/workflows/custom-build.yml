@@ -1,0 +1,77 @@
+# Placed in each build/<version> branch by scripts/sync.sh. Pushing that
+# branch builds RustDesk 1.5.3 with this repository's changes, then
+# publishes the release with readable file names and refreshes the page.
+name: Custom build
+
+on:
+  push:
+    branches: ["build/1.5.3"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: custom-build-1.5.3
+  cancel-in-progress: false
+
+jobs:
+  build:
+    uses: ./.github/workflows/flutter-build.yml
+    secrets: inherit
+    with:
+      upload-artifact: true
+      upload-tag: "build-1.5.3"
+      publish-update-metadata: false
+
+  publish:
+    needs: build
+    # Publish what was built even when one platform failed (for example the
+    # Mac build without signing): the page falls back to the official app
+    # for a platform this release lacks.
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+      VERSION: "1.5.3"
+      MAC_SIGNING: ${{ vars.MAC_SIGNING }}
+    steps:
+      - name: Collect and rename the files
+        run: |
+          set -euo pipefail
+          mkdir in out
+          gh release download "build-$VERSION" -R "$REPO" -D in || true
+          ls -l in
+          apk=$(ls in/rustdesk-"$VERSION"-universal-signed.apk 2>/dev/null || true)
+          if [ -n "$apk" ]; then cp "$apk" out/RustDesk-Android.apk; else echo "::warning::no signed universal Android app"; fi
+          if [ "$MAC_SIGNING" = true ]; then
+            for a in aarch64:Apple-chip x86_64:Intel; do
+              f="in/rustdesk-$VERSION-${a%%:*}.dmg"
+              if [ -f "$f" ]; then cp "$f" "out/RustDesk-Mac-${a#*:}.dmg"; else echo "::warning::no Mac app for ${a%%:*}"; fi
+            done
+          else
+            echo "Mac signing is not set up (repository variable MAC_SIGNING); Mac apps are not published"
+          fi
+          ls -l out
+          [ -n "$(ls out)" ] || { echo "::error::nothing to publish"; exit 1; }
+
+      - name: Publish the release
+        run: |
+          set -euo pipefail
+          notes="RustDesk $VERSION built from the official source with the ID server rustdesk.nedworks.org and its key built in, and the update check switched off.
+
+          Source: the [build/$VERSION branch](https://github.com/$REPO/tree/build/$VERSION) (the official RustDesk $VERSION source plus the changes in [patch/apply.py](https://github.com/$REPO/blob/main/patch/apply.py)).
+          Download page: https://help.mdbraber.com"
+          if gh release view "$VERSION" -R "$REPO" >/dev/null 2>&1; then
+            gh release upload "$VERSION" -R "$REPO" --clobber out/*
+          else
+            gh release create "$VERSION" -R "$REPO" --target "$GITHUB_SHA" --title "RustDesk $VERSION" --notes "$notes" --latest out/*
+          fi
+          gh release delete "build-$VERSION" -R "$REPO" --cleanup-tag -y || true
+
+      - name: Refresh the download page
+        run: gh workflow run pages.yml -R "$REPO" --ref main
