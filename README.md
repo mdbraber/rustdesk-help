@@ -22,12 +22,10 @@ built from.
     with `RustDesk-Android.apk`, `RustDesk-Mac-Apple-chip.dmg` and
     `RustDesk-Mac-Intel.dmg`, and refreshes the page.
   A failure of the daily check opens an issue.
-- **Download page** (`site/`): served at help.mdbraber.com from spiff
-  (`/var/www/help/static`, built with `python3 -I site/build.py`); a copy is
-  published by `.github/workflows/pages.yml` at
-  <https://mdbraber.github.io/rustdesk-help/>. Mac and Android buttons use
-  GitHub's `releases/latest/download/` links, so the page on spiff stays
-  current for them without being rebuilt. Dutch
+- **Download page** (`.github/workflows/pages.yml`, `site/`): published on
+  GitHub Pages at <https://help.mdbraber.com> (DNS: CNAME to
+  `mdbraber.github.io` at deSEC). Mac and Android buttons use GitHub's
+  `releases/latest/download/` links. Dutch
   (`index.html`) and English (`en.html`). Mac and Android come from this
   repository's latest release when it has them, otherwise from the official
   release with a setup step. Windows is the official installer saved under a
@@ -47,6 +45,13 @@ built from.
 it with its own quotes, e.g. `"Developer ID Application: Name (TEAMID)"`.
 `MACOS_NOTARIZE_JSON` is the base64 of an `rcodesign` App Store Connect API
 key file (`rcodesign encode-app-store-connect-api-key`).
+
+## Changing the address
+
+Create or change the DNS record first, wait until deSEC's own name servers
+(`dig @ns1.desec.io`, `dig @ns2.desec.org`) return it (about 2.5 minutes),
+and only then set the custom domain in the Pages settings. Asked earlier,
+GitHub caches "no such name" for an hour and doesn't issue a certificate.
 
 ## By hand
 
